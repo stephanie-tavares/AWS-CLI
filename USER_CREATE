@@ -1,0 +1,22 @@
+PROJECTNAME=
+ARN= 
+PROFILE=YOU_AWS_PROFILE_HERE 
+
+cat <<EOF > /tmp/user.json 
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "${ARN}"
+        }
+    ]
+}
+EOF
+
+aws iam create-user --user-name ${PROJECTNAME} --profile=${PROFILE}
+aws iam create-login-profile --user-name ${PROJECTNAME} --password "<YOU_PASSWORD_HERE>" --password-reset-required  --profile ${PROFILE} 
+aws iam add-user-to-group --user-name ${PROJECTNAME} --group-name <GROUP_NAME> --profile=YOU_AWS_PROFILE_HERE
+aws iam put-user-policy --user-name ${PROJECTNAME} --policy-name policy-${PROJECTNAME} --policy-document file:///tmp/user.json --profile=${PROFILE}
